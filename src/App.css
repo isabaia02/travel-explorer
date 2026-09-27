@@ -1,15 +1,18 @@
 .app {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 40px 32px 56px;
 }
 
 .app-header {
-  margin-bottom: 40px;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
 }
 
 .app-header h1 {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  color: var(--text-h);
 }
 
 .app-header p {
@@ -18,4 +21,19 @@
 
 .countries-section h2 {
   margin-bottom: 8px;
+}
+
+.countries-section > p {
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+@media (max-width: 600px) {
+  .app {
+    padding: 28px 16px 40px;
+  }
+
+  .app-header {
+    margin-bottom: 28px;
+  }
 }

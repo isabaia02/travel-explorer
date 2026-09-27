@@ -1,13 +1,37 @@
 import { useEffect, useState } from 'react';
-import { getCountries } from './services/countriesApi';
-import CountryCard from './components/CountryCard/CountryCard';
+import {
+  getCountries,
+  searchCountries,
+} from './services/countriesApi';
 import CountryGrid from './components/CountryGrid/CountryGrid';
+import SearchBar from './components/SearchBar/SearchBar';
+import Loading from './components/Loading/Loading';
+import ErrorState from './components/ErrorState/ErrorState';
+import EmptyState from './components/EmptyState/EmptyState';
 import './App.css';
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  async function handleSearch(query) {
+    try {
+      setLoading(true);
+      setError('');
+
+      const data = query.trim()
+        ? await searchCountries(query.trim())
+        : await getCountries();
+
+      setCountries(data.objects);
+    } catch (error) {
+      setCountries([]);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     async function loadCountries() {
@@ -29,11 +53,11 @@ function App() {
   }, []);
 
   if (loading) {
-    return <p>Loading countries...</p>;
+    return <Loading />;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <ErrorState message={error} />;
   }
 
   return (
@@ -44,11 +68,17 @@ function App() {
       </header>
 
       <section className="countries-section">
+        <SearchBar onSearch={handleSearch} />
+
         <h2>Countries</h2>
 
         <p>{countries.length} countries loaded.</p>
 
-        <CountryGrid countries={countries} />
+        {countries.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <CountryGrid countries={countries} />
+        )}
       </section>
     </main>
   );
