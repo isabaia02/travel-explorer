@@ -5,6 +5,8 @@ import {
 } from './services/countriesApi';
 import CountryGrid from './components/CountryGrid/CountryGrid';
 import SearchBar from './components/SearchBar/SearchBar';
+import RegionFilter from './components/RegionFilter/RegionFilter';
+import LanguageFilter from './components/LanguageFilter/LanguageFilter';
 import Loading from './components/Loading/Loading';
 import ErrorState from './components/ErrorState/ErrorState';
 import EmptyState from './components/EmptyState/EmptyState';
@@ -14,15 +16,29 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [region, setRegion] = useState('');
+  const [language, setLanguage] = useState('');
+  const [query, setQuery] = useState('');
 
-  async function handleSearch(query) {
+  async function handleSearch(
+    searchQuery = query,
+    selectedRegion = region,
+    selectedLanguage = language
+  ) {
     try {
       setLoading(true);
       setError('');
 
-      const data = query.trim()
-        ? await searchCountries(query.trim())
-        : await getCountries();
+      const normalizedQuery = searchQuery.trim();
+      const data = normalizedQuery
+        ? await searchCountries(normalizedQuery, {
+          region: selectedRegion,
+          language: selectedLanguage,
+        })
+        : await getCountries({
+          region: selectedRegion,
+          language: selectedLanguage,
+        });
 
       setCountries(data.objects);
     } catch (error) {
@@ -31,6 +47,16 @@ function App() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleRegionChange(nextRegion) {
+    setRegion(nextRegion);
+    handleSearch(query, nextRegion);
+  }
+
+  function handleLanguageChange(nextLanguage) {
+    setLanguage(nextLanguage);
+    handleSearch(query, region, nextLanguage);
   }
 
   useEffect(() => {
@@ -67,8 +93,24 @@ function App() {
         <p>Explore countries around the world.</p>
       </header>
 
-      <section className="countries-section">
-        <SearchBar onSearch={handleSearch} />
+     <section className="countries-section">
+        <SearchBar
+          query={query}
+          onQueryChange={setQuery}
+          onSearch={handleSearch}
+        />
+
+        <div className="filters-row">
+          <RegionFilter
+            value={region}
+            onChange={handleRegionChange}
+          />
+
+          <LanguageFilter
+            value={language}
+            onChange={handleLanguageChange}
+          />
+        </div>
 
         <h2>Countries</h2>
 

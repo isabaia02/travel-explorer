@@ -23,6 +23,13 @@
   margin-bottom: 8px;
 }
 
+.filters-row {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-bottom: 40px;
+}
+
 .countries-section > p {
   color: var(--text);
   margin-bottom: 24px;
@@ -35,5 +42,11 @@
 
   .app-header {
     margin-bottom: 28px;
+  }
+
+  .filters-row {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
   }
 }

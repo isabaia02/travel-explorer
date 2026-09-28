@@ -34,39 +34,36 @@ async function request(endpoint = '', params = {}) {
   return result.data;
 }
 
-export async function getCountries({ limit = 100, offset = 0 } = {}) {
-  const data = await request('', {
+export async function getCountries({
+  region = '',
+  language = '',
+  limit = 100,
+  offset = 0,
+} = {}) {
+  return request('', {
+    region,
+    languages: language,
     limit,
     offset,
   });
-
-  return data;
 }
 
 export async function searchCountries(
   query,
-  { limit = 100, offset = 0 } = {},
+  {
+    region = '',
+    language = '',
+    limit = 100,
+    offset = 0,
+  } = {}
 ) {
-  if (!query?.trim()) {
-    return {
-      objects: [],
-      meta: {
-        total: 0,
-        count: 0,
-        limit,
-        offset,
-        more: false,
-      },
-    };
-  }
-
-  const data = await request('/name', {
-    q: query.trim(),
+  return request('/name', {
+    q: query,
+    region,
+    languages: language,
     limit,
     offset,
   });
-
-  return data;
 }
 
 export async function getCountryByCode(code) {

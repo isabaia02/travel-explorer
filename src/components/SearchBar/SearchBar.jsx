@@ -1,13 +1,10 @@
-import { useState } from 'react';
 import {
   Box,
   Button,
   TextField,
 } from '@mui/material';
 
-function SearchBar({ onSearch }) {
-  const [query, setQuery] = useState('');
-
+function SearchBar({ query, onQueryChange, onSearch }) {
   function handleSubmit(event) {
     event.preventDefault();
 
@@ -21,7 +18,7 @@ function SearchBar({ onSearch }) {
       sx={{
         display: 'flex',
         gap: 2,
-        marginBottom: 4,
+        marginBottom: 2,
         alignItems: 'flex-start',
         '@media (max-width: 600px)': {
           flexDirection: 'column',
@@ -34,7 +31,7 @@ function SearchBar({ onSearch }) {
         label="Search country"
         placeholder="Ex.: Brazil"
         value={query}
-        onChange={(event) => setQuery(event.target.value)}
+        onChange={(event) => onQueryChange(event.target.value)}
       />
 
       <Button
