@@ -66,22 +66,26 @@ export async function searchCountries(
   });
 }
 
-export async function getCountryByCode(code) {
-  return request(`/codes.alpha_2/${encodeURIComponent(code)}`);
-}
+export function filterCountries(countries, { region = '', language = '' } = {}) {
+  return countries.filter((country) => {
+    const matchesRegion = !region || country.region === region;
 
-export async function getCountryByName(name) {
-  return request(`/names.common/${encodeURIComponent(name)}`);
-}
+    if (!matchesRegion || !language) {
+      return matchesRegion;
+    }
 
-export async function getCountriesByRegion(region) {
-  return request(`/region/${encodeURIComponent(region)}`);
-}
+    const countryLanguages = country.languages;
 
-export async function getCountriesBySubregion(subregion) {
-  return request(`/subregion/${encodeURIComponent(subregion)}`);
-}
+    if (Array.isArray(countryLanguages)) {
+      return countryLanguages.some((item) => (
+        item === language
+        || item.code === language
+        || item.name === language
+      ));
+    }
 
-export async function getCountriesByCurrency(currency) {
-  return request(`/currencies/${encodeURIComponent(currency)}`);
+    return Object.values(countryLanguages || {}).some((item) => (
+      item === language || item?.name === language
+    ));
+  });
 }

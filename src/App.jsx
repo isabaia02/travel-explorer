@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
+  filterCountries,
   getCountries,
   searchCountries,
 } from './services/countriesApi';
@@ -10,6 +11,7 @@ import LanguageFilter from './components/LanguageFilter/LanguageFilter';
 import Loading from './components/Loading/Loading';
 import ErrorState from './components/ErrorState/ErrorState';
 import EmptyState from './components/EmptyState/EmptyState';
+import SortSelect from './components/SortSelect/SortSelect';
 import './App.css';
 
 function App() {
@@ -19,6 +21,48 @@ function App() {
   const [region, setRegion] = useState('');
   const [language, setLanguage] = useState('');
   const [query, setQuery] = useState('');
+  const [sortOption, setSortOption] = useState('default');
+
+  const sortedCountries = useMemo(() => {
+    const sorted = [...countries];
+
+    switch (sortOption) {
+      case 'name-asc':
+        return sorted.sort((a, b) =>
+          a.names.common.localeCompare(b.names.common)
+        );
+
+      case 'name-desc':
+        return sorted.sort((a, b) =>
+          b.names.common.localeCompare(a.names.common)
+        );
+
+      case 'population-desc':
+        return sorted.sort(
+          (a, b) => b.population - a.population
+        );
+
+      case 'population-asc':
+        return sorted.sort(
+          (a, b) => a.population - b.population
+        );
+
+      case 'area-desc':
+        return sorted.sort(
+          (a, b) =>
+            b.area.kilometers - a.area.kilometers
+        );
+
+      case 'area-asc':
+        return sorted.sort(
+          (a, b) =>
+            a.area.kilometers - b.area.kilometers
+        );
+
+      default:
+        return sorted;
+    }
+  }, [countries, sortOption]);
 
   async function handleSearch(
     searchQuery = query,
@@ -40,7 +84,10 @@ function App() {
           language: selectedLanguage,
         });
 
-      setCountries(data.objects);
+      setCountries(filterCountries(data.objects, {
+        region: selectedRegion,
+        language: selectedLanguage,
+      }));
     } catch (error) {
       setCountries([]);
       setError(error.message);
@@ -110,16 +157,21 @@ function App() {
             value={language}
             onChange={handleLanguageChange}
           />
+
+          <SortSelect
+            value={sortOption}
+            onChange={setSortOption}
+          />
         </div>
 
         <h2>Countries</h2>
 
-        <p>{countries.length} countries loaded.</p>
+        <p>{sortedCountries.length} countries loaded.</p>
 
         {countries.length === 0 ? (
           <EmptyState />
         ) : (
-          <CountryGrid countries={countries} />
+          <CountryGrid countries={sortedCountries} />
         )}
       </section>
     </main>
