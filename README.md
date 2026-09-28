@@ -1,16 +1,83 @@
-# React + Vite
+# Travel Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web desenvolvida em React para explorar países e suas principais informações, utilizando a API REST Countries. A aplicação permite pesquisar países, filtrar por região e idioma e ordenar os resultados.
 
-Currently, two official plugins are available:
+## API externa
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[REST Countries API](https://restcountries.com/docs/countries)
 
-## React Compiler
+## Tecnologias
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- Vite
+- Material UI (MUI) — biblioteca React utilizada para os componentes da interface
+- CSS
+- JavaScript / JSX
 
-## Expanding the ESLint configuration
+### Hook utilizado
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+O projeto utiliza o hook **`useMemo`** do React para memorizar a lista de países após a aplicação da ordenação, evitando recalcular a ordenação quando ela não é necessária.
+
+## Estrutura do projeto
+
+```text
+src/
+├── components/
+│   ├── CountryCard/
+│   ├── CountryGrid/
+│   ├── SearchBar/
+│   ├── RegionFilter/
+│   ├── LanguageFilter/
+│   ├── SortSelect/
+│   ├── Loading/
+│   ├── ErrorState/
+│   └── EmptyState/
+│
+├── services/
+│   └── countriesApi.js
+│
+├── App.jsx
+├── App.css
+├── index.css
+└── main.jsx
+
+.env
+.env.example
+.gitignore
+index.html
+package.json
+vite.config.js
+```
+
+- **`components/`**: componentes reutilizáveis da interface.
+- **`services/countriesApi.js`**: comunicação com a API REST Countries.
+- **`App.jsx`**: componente principal e gerenciamento dos estados da aplicação.
+- **`.env`**: configuração do token da API.
+
+## Como rodar o projeto
+
+### 1. Instalar as dependências
+
+```bash
+npm install
+```
+
+### 2. Configurar o `.env`
+
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+VITE_REST_COUNTRIES_TOKEN=seu_token_aqui
+```
+
+O token deve ser obtido na API REST Countries.
+
+> O arquivo `.env` não deve ser versionado. O projeto já possui regras no `.gitignore` para arquivos de ambiente.
+
+### 3. Iniciar a aplicação
+
+```bash
+npm run dev
+```
+
+Depois, acesse a URL exibida pelo Vite no terminal.
